@@ -316,3 +316,33 @@ func TestQueryInt(t *testing.T) {
 		}
 	}
 }
+
+func TestFailCause_HidesCause(t *testing.T) {
+	app := fiber.New()
+	app.Post("/brand", func(c fiber.Ctx) error {
+		return httpx.FailCause(c, http.StatusBadRequest, "Товар передан не верно", errors.New("mongo: no documents"))
+	})
+
+	status, body := call(t, app, http.MethodPost, "/brand", "")
+	if status != http.StatusBadRequest {
+		t.Fatalf("статус: got %d, want 400", status)
+	}
+	if body != `{"message":"Товар передан не верно"}` {
+		t.Fatalf("тело: got %s", body)
+	}
+	if strings.Contains(body, "mongo") {
+		t.Fatalf("внутренняя причина утекла в ответ: %s", body)
+	}
+}
+
+func TestFailCause_NilCause(t *testing.T) {
+	app := fiber.New()
+	app.Get("/", func(c fiber.Ctx) error {
+		return httpx.FailCause(c, http.StatusForbidden, "нет доступа", nil)
+	})
+
+	status, body := call(t, app, http.MethodGet, "/", "")
+	if status != http.StatusForbidden || body != `{"message":"нет доступа"}` {
+		t.Fatalf("got %d %s", status, body)
+	}
+}

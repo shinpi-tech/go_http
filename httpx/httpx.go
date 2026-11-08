@@ -69,12 +69,21 @@ func Fail(c fiber.Ctx, err error) error {
 		return c.Status(apiErr.Status).JSON(ErrorBody{Message: apiErr.Message})
 	}
 
-	log.Printf("httpx: %v", err)
+	log.Printf("httpx: %s %s: %v", c.Method(), c.Path(), err)
 	return c.Status(fiber.StatusInternalServerError).JSON(ErrorBody{Message: internalMessage})
 }
 
 // FailStatus пишет ошибку с явно заданными статусом и сообщением.
 func FailStatus(c fiber.Ctx, status int, message string) error {
+	return c.Status(status).JSON(ErrorBody{Message: message})
+}
+
+// FailCause — ошибка с явным статусом и сообщением; внутренняя причина пишется в
+// лог и клиенту не отдаётся. Заменяет ручные `{"message", "error"}` в обработчиках.
+func FailCause(c fiber.Ctx, status int, message string, cause error) error {
+	if cause != nil {
+		log.Printf("httpx: %s %s: %d %s: %v", c.Method(), c.Path(), status, message, cause)
+	}
 	return c.Status(status).JSON(ErrorBody{Message: message})
 }
 
