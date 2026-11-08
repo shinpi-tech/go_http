@@ -43,6 +43,7 @@ func TestStatuses(t *testing.T) {
 		{apierr.Conflict(""), 409},
 		{apierr.UnprocessableEntity(""), 422},
 		{apierr.TooManyRequests(""), 429},
+		{apierr.Unavailable(""), 503},
 	}
 
 	for _, tc := range cases {

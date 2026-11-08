@@ -66,6 +66,11 @@ func TooManyRequests(message string) *Error {
 	return New(http.StatusTooManyRequests, message)
 }
 
+// Unavailable — 503: зависимость сервиса недоступна.
+func Unavailable(message string) *Error {
+	return New(http.StatusServiceUnavailable, message)
+}
+
 // Internal — 500 с нейтральным сообщением для клиента.
 func Internal(cause error) *Error {
 	return New(http.StatusInternalServerError, "внутренняя ошибка сервера").Wrap(cause)
