@@ -382,3 +382,15 @@ func TestItems(t *testing.T) {
 		t.Fatalf("got %d %s", status, body)
 	}
 }
+
+func TestAccepted(t *testing.T) {
+	app := fiber.New()
+	app.Post("/", func(c fiber.Ctx) error {
+		return httpx.Accepted(c, "64f0c2")
+	})
+
+	status, body := call(t, app, http.MethodPost, "/", "")
+	if status != http.StatusAccepted || body != `{"id":"64f0c2"}` {
+		t.Fatalf("got %d %s", status, body)
+	}
+}

@@ -102,6 +102,11 @@ func ID(c fiber.Ctx, id string) error {
 	return c.Status(fiber.StatusOK).JSON(IDBody{ID: id})
 }
 
+// Accepted отвечает 202 и идентификатором принятой в работу записи.
+func Accepted(c fiber.Ctx, id string) error {
+	return c.Status(fiber.StatusAccepted).JSON(IDBody{ID: id})
+}
+
 // Created отвечает 201 и идентификатором созданной записи.
 func Created(c fiber.Ctx, id string) error {
 	return c.Status(fiber.StatusCreated).JSON(IDBody{ID: id})
