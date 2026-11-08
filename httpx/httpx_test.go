@@ -346,3 +346,15 @@ func TestFailCause_NilCause(t *testing.T) {
 		t.Fatalf("got %d %s", status, body)
 	}
 }
+
+func TestFailCause_StringCause(t *testing.T) {
+	app := fiber.New()
+	app.Get("/", func(c fiber.Ctx) error {
+		return httpx.FailCause(c, http.StatusBadGateway, "ошибка поставщика", "timeout 5s")
+	})
+
+	status, body := call(t, app, http.MethodGet, "/", "")
+	if status != http.StatusBadGateway || body != `{"message":"ошибка поставщика"}` {
+		t.Fatalf("got %d %s", status, body)
+	}
+}

@@ -80,7 +80,7 @@ func FailStatus(c fiber.Ctx, status int, message string) error {
 
 // FailCause — ошибка с явным статусом и сообщением; внутренняя причина пишется в
 // лог и клиенту не отдаётся. Заменяет ручные `{"message", "error"}` в обработчиках.
-func FailCause(c fiber.Ctx, status int, message string, cause error) error {
+func FailCause(c fiber.Ctx, status int, message string, cause any) error {
 	if cause != nil {
 		log.Printf("httpx: %s %s: %d %s: %v", c.Method(), c.Path(), status, message, cause)
 	}
