@@ -358,3 +358,27 @@ func TestFailCause_StringCause(t *testing.T) {
 		t.Fatalf("got %d %s", status, body)
 	}
 }
+
+func TestCreated(t *testing.T) {
+	app := fiber.New()
+	app.Post("/", func(c fiber.Ctx) error {
+		return httpx.Created(c, "64f0c2")
+	})
+
+	status, body := call(t, app, http.MethodPost, "/", "")
+	if status != http.StatusCreated || body != `{"id":"64f0c2"}` {
+		t.Fatalf("got %d %s", status, body)
+	}
+}
+
+func TestItems(t *testing.T) {
+	app := fiber.New()
+	app.Get("/", func(c fiber.Ctx) error {
+		return httpx.Items(c, []string{"a", "b"})
+	})
+
+	status, body := call(t, app, http.MethodGet, "/", "")
+	if status != http.StatusOK || body != `{"items":["a","b"]}` {
+		t.Fatalf("got %d %s", status, body)
+	}
+}

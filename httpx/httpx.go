@@ -47,6 +47,11 @@ type ListBody struct {
 	Pagination Pagination `json:"pagination"`
 }
 
+// ItemsBody — список без пагинации.
+type ItemsBody struct {
+	Items any `json:"items"`
+}
+
 // IDBody — единый ответ на создание: {"id": "..."}.
 type IDBody struct {
 	ID string `json:"id"`
@@ -95,6 +100,17 @@ func OK(c fiber.Ctx) error {
 // ID отвечает 200 и идентификатором созданной записи.
 func ID(c fiber.Ctx, id string) error {
 	return c.Status(fiber.StatusOK).JSON(IDBody{ID: id})
+}
+
+// Created отвечает 201 и идентификатором созданной записи.
+func Created(c fiber.Ctx, id string) error {
+	return c.Status(fiber.StatusCreated).JSON(IDBody{ID: id})
+}
+
+// Items отвечает списком без пагинации: {items}.
+// Для постраничных списков — List.
+func Items(c fiber.Ctx, items any) error {
+	return c.Status(fiber.StatusOK).JSON(ItemsBody{Items: items})
 }
 
 // List отвечает единым списком: {items, pagination}. Значения page и limit
